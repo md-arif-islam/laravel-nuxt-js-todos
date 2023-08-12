@@ -26,6 +26,7 @@
             </div>
           </div>
           <div>
+            {{ todos }}
             <div
               class="flex mb-4 items-center"
               v-for="(todo, index) in todos"
@@ -46,7 +47,7 @@
                 class="btn bg-gray-300 hover:bg-gray-400 text-gray-700"
                 @click="updateTodoStatus(todo, index)"
               >
-                Not Done
+                Undo
               </button>
               <button
                 v-else
@@ -83,7 +84,7 @@ export default {
     addTodo() {
       this.$nuxt.$loading.start();
       this.$axios
-        .post("http://127.0.0.1:8000/api/todos", { content: this.content })
+        .post("/todos", { content: this.content })
         .then((res) => {
           this.todos.unshift(res.data);
           this.content = "";
@@ -99,9 +100,9 @@ export default {
     updateTodoStatus(todo, index) {
       this.$nuxt.$loading.start();
       this.$axios
-        .put(`http://127.0.0.1:8000/api/todos/${todo.id}`)
+        .put(`/todos/${todo.id}`)
         .then((res) => {
-          this.todos[index].is_done = res.data.is_done; // Fixed the typo here
+          this.todos[index].is_done = res.data.is_done;
         })
         .catch((err) => {
           console.error(err);
@@ -114,7 +115,7 @@ export default {
     deleteTodo(todo, index) {
       this.$nuxt.$loading.start();
       this.$axios
-        .delete(`http://127.0.0.1:8000/api/todos/${todo.id}`)
+        .delete(`/todos/${todo.id}`)
         .then((res) => {
           if (res.data == true) {
             this.todos.splice(index, 1);
@@ -129,11 +130,10 @@ export default {
     },
   },
 
-  async asyncData({ params }) {
-    const todos = await fetch("http://127.0.0.1:8000/api/todos").then((res) =>
-      res.json()
+  async fetch() {
+    this.todos = await fetch(`${this.$axios.defaults.baseURL}todos`).then(
+      (res) => res.json()
     );
-    return { todos };
   },
 };
 </script>
