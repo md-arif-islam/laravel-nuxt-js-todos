@@ -81,6 +81,7 @@ export default {
 
   methods: {
     addTodo() {
+      this.$nuxt.$loading.start();
       this.$axios
         .post("http://127.0.0.1:8000/api/todos", { content: this.content })
         .then((res) => {
@@ -88,24 +89,30 @@ export default {
           this.content = "";
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
         })
-        .finally(() => {});
+        .finally(() => {
+          this.$nuxt.$loading.finish();
+        });
     },
 
     updateTodoStatus(todo, index) {
+      this.$nuxt.$loading.start();
       this.$axios
         .put(`http://127.0.0.1:8000/api/todos/${todo.id}`)
         .then((res) => {
-          this.todo[index].is_done = res.data.is_done;
+          this.todos[index].is_done = res.data.is_done; // Fixed the typo here
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
         })
-        .finally(() => {});
+        .finally(() => {
+          this.$nuxt.$loading.finish();
+        });
     },
 
     deleteTodo(todo, index) {
+      this.$nuxt.$loading.start();
       this.$axios
         .delete(`http://127.0.0.1:8000/api/todos/${todo.id}`)
         .then((res) => {
@@ -114,16 +121,19 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
         })
-        .finally(() => {});
+        .finally(() => {
+          this.$nuxt.$loading.finish();
+        });
     },
   },
 
-  async fetch() {
-    this.todos = await fetch("http://127.0.0.1:8000/api/todos").then((res) =>
+  async asyncData({ params }) {
+    const todos = await fetch("http://127.0.0.1:8000/api/todos").then((res) =>
       res.json()
     );
+    return { todos };
   },
 };
 </script>
