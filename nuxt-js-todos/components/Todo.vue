@@ -26,7 +26,6 @@
             </div>
           </div>
           <div>
-            {{ todos }}
             <div
               class="flex mb-4 items-center"
               v-for="(todo, index) in todos"
@@ -131,9 +130,11 @@ export default {
   },
 
   async fetch() {
-    this.todos = await fetch(`${this.$axios.defaults.baseURL}todos`).then(
-      (res) => res.json()
-    );
+    try {
+      this.todos = await this.$axios.$get("todos");
+    } catch (error) {
+      console.error("Error fetching todos:", error);
+    }
   },
 };
 </script>
