@@ -25,7 +25,12 @@ class TodoController extends Controller {
      * Store a newly created resource in storage.
      */
     public function store( Request $request ) {
-        //
+        $todo['content'] = $request->content;
+        $todo['is_done'] = false;
+
+        $todo = Todo::create( $todo );
+
+        return response( $todo );
     }
 
     /**

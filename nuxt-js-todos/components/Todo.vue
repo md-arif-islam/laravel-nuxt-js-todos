@@ -26,13 +26,20 @@
             </div>
           </div>
           <div>
-            {{ todos }}
-            <div class="flex mb-4 items-center">
-              <p class="flex-grow text-gray-600">Content</p>
-              <button class="btn bg-gray-300 hover:bg-gray-400 text-gray-700">
+            <div
+              class="flex mb-4 items-center"
+              v-for="(todo, index) in todos"
+              :key="todo.id"
+            >
+              <p class="flex-grow text-gray-600">{{ todo.content }}</p>
+              <button
+                v-if="todo.is_done"
+                class="btn bg-gray-300 hover:bg-gray-400 text-gray-700"
+              >
                 Not Done
               </button>
               <button
+                v-else
                 class="btn bg-green-500 hover:bg-green-600 text-white ml-2"
               >
                 Done
@@ -60,7 +67,16 @@ export default {
 
   methods: {
     addTodo() {
-      console.log("Submit");
+      this.$axios
+        .post("http://127.0.0.1:8000/api/todos", { content: this.content })
+        .then((res) => {
+          this.todos.unshift(res.data);
+          this.content = "";
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {});
     },
   },
 
