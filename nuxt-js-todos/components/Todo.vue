@@ -31,20 +31,34 @@
               v-for="(todo, index) in todos"
               :key="todo.id"
             >
-              <p class="flex-grow text-gray-600">{{ todo.content }}</p>
+              <p
+                :class="[
+                  todo.is_done ? 'line-through text-green-600' : '',
+                  `w-full text-grey-darkest font-semibold text-gray-600`,
+                ]"
+                class="flex-grow text-gray-600"
+              >
+                {{ todo.content }}
+              </p>
+
               <button
                 v-if="todo.is_done"
                 class="btn bg-gray-300 hover:bg-gray-400 text-gray-700"
+                @click="updateTodoStatus(todo, index)"
               >
                 Not Done
               </button>
               <button
                 v-else
                 class="btn bg-green-500 hover:bg-green-600 text-white ml-2"
+                @click="updateTodoStatus(todo, index)"
               >
                 Done
               </button>
-              <button class="btn bg-red-500 hover:bg-red-600 text-white ml-2">
+              <button
+                class="btn bg-red-500 hover:bg-red-600 text-white ml-2"
+                @click="deleteTodo(todo, index)"
+              >
                 Remove
               </button>
             </div>
@@ -72,6 +86,32 @@ export default {
         .then((res) => {
           this.todos.unshift(res.data);
           this.content = "";
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {});
+    },
+
+    updateTodoStatus(todo, index) {
+      this.$axios
+        .put(`http://127.0.0.1:8000/api/todos/${todo.id}`)
+        .then((res) => {
+          this.todo[index].is_done = res.data.is_done;
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {});
+    },
+
+    deleteTodo(todo, index) {
+      this.$axios
+        .delete(`http://127.0.0.1:8000/api/todos/${todo.id}`)
+        .then((res) => {
+          if (res.data == true) {
+            this.todos.splice(index, 1);
+          }
         })
         .catch((err) => {
           console.log(err);

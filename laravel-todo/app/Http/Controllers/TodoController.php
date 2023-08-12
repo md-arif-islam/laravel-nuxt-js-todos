@@ -51,13 +51,17 @@ class TodoController extends Controller {
      * Update the specified resource in storage.
      */
     public function update( Request $request, Todo $todo ) {
-        //
+        $todo->is_done = !$todo->is_done;
+        $todo->save();
+
+        return response( $todo );
     }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy( Todo $todo ) {
-        //
+        $todo->delete();
+        return response( true );
     }
 }
