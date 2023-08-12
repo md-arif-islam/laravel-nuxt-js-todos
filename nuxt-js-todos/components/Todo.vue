@@ -19,10 +19,12 @@
               <input
                 class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-grey-darker"
                 placeholder="Add Todo"
+                v-model="content"
               />
 
               <button
                 class="flex-no-shrink p-2 border-2 rounded-lg text-teal border-teal text-white bg-blue-500 hover:bg-blue-700"
+                @click="addTodo"
               >
                 Add
               </button>
@@ -63,5 +65,16 @@
 <script>
 export default {
   name: "NuxtJSTodo",
+  data() {
+    return {
+      content: "",
+    };
+  },
+
+  methods: {
+    addTodo() {
+      console.log("Submit");
+    },
+  },
 };
 </script>
