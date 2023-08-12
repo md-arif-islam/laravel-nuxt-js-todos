@@ -26,6 +26,7 @@
             </div>
           </div>
           <div>
+            {{ todos }}
             <div class="flex mb-4 items-center">
               <p class="flex-grow text-gray-600">Content</p>
               <button class="btn bg-gray-300 hover:bg-gray-400 text-gray-700">
@@ -53,6 +54,7 @@ export default {
   data() {
     return {
       content: "",
+      todos: [],
     };
   },
 
@@ -60,6 +62,12 @@ export default {
     addTodo() {
       console.log("Submit");
     },
+  },
+
+  async fetch() {
+    this.todos = await fetch("http://127.0.0.1:8000/api/todos").then((res) =>
+      res.json()
+    );
   },
 };
 </script>
