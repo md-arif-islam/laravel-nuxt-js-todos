@@ -113,19 +113,22 @@ export default {
 
     deleteTodo(todo, index) {
       this.$nuxt.$loading.start();
-      this.$axios
-        .delete(`/todos/${todo.id}`)
-        .then((res) => {
-          if (res.data == true) {
-            this.todos.splice(index, 1);
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-        })
-        .finally(() => {
-          this.$nuxt.$loading.finish();
-        });
+
+      if (confirm("Do you really want to delete?")) {
+        this.$axios
+          .delete(`/todos/${todo.id}`)
+          .then((res) => {
+            if (res.data == true) {
+              this.todos.splice(index, 1);
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+          })
+          .finally(() => {
+            this.$nuxt.$loading.finish();
+          });
+      }
     },
   },
 
